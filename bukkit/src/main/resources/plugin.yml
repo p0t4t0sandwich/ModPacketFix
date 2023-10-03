@@ -1,0 +1,7 @@
+name: ModPacketFix
+version: '${version}'
+author: p0t4t0sandwich
+description: A plugin that fixes some of the too big/too small packet errors that occur when connecting to a Vanilla server with a Forge client
+main: dev.neuralnexus.modpacketfix.bukkit.BukkitModPacketFixPlugin
+depend: [ProtocolLib]
+folia-supported: true
