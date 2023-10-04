@@ -1,25 +1,46 @@
 package dev.neuralnexus.modpacketfix.bukkit;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
+import dev.neuralnexus.modpacketfix.bukkit.eventlisteners.PlayerEventListener;
+import dev.neuralnexus.modpacketfix.bukkit.messagelisteners.BrandListener;
+import dev.neuralnexus.modpacketfix.bukkit.packetlisteners.server.RECIPES_SPacketRecipeBook;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.Messenger;
+
+import java.util.ArrayList;
 
 /**
  * The ModPacketFix Bukkit plugin.
  */
 public class BukkitModPacketFixPlugin extends JavaPlugin {
+    private final ArrayList<String> forgeUsers = new ArrayList<>();
+
     /**
-     * Use whatever logger is being used.
-     * @param message The message to log
+     * If the user is using forge
+     * @param player The player to check
+     * @return If the user is using forge
      */
-    public void useLogger(String message) {
-        getLogger().info(message);
+    public boolean isForgeUser(Player player) {
+        return forgeUsers.contains(player.getName());
+    }
+
+    /**
+     * Add a user to the forge users list
+     * @param player The player to add
+     */
+    public void addForgeUser(Player player) {
+        if (!isForgeUser(player)) forgeUsers.add(player.getName());
+    }
+
+    /**
+     * Remove a user from the forge users list
+     * @param player The player to remove
+     */
+    public void removeForgeUser(Player player) {
+        forgeUsers.remove(player.getName());
     }
 
     /**
@@ -27,37 +48,35 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
      */
     @Override
     public void onEnable() {
-        useLogger("ModPacketFix has been enabled!");
-
+        Messenger messenger = getServer().getMessenger();
+        PluginManager pluginManager = getServer().getPluginManager();
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-        // Server.AUTO_RECIPE
-        // Server.RECIPE_UPDATE
-        // Client.AUTO_RECIPE
-        // Client.RECIPE_SETTINGS
-        // Client.RECIPE_DISPLAYED
-        // PacketType.Login.Client.START -> onPacketReceiving -> packet.getStrings().read(0) -> username
+
+        // Clear the forge users list every 5 minutes
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, forgeUsers::clear, 0L, 6000L);
+
+        // Register the plugin message listener
+//        messenger.registerIncomingPluginChannel(this, "MC|Brand", new BrandListener(this));
+        messenger.registerIncomingPluginChannel(this, "minecraft:brand", new BrandListener(this));
+
+                // Register player event listener
+        pluginManager.registerEvents(new PlayerEventListener(this), this);
 
         // Fixes the recipe book packet being too large for the client to handle.
-        manager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.RECIPES) {
-            @Override
-            public void onPacketSending(PacketEvent event) {
-                Player player = event.getPlayer();
-                useLogger("Skipping Recipe Book packet [SPacketRecipeBook] being sent to " + player.getName());
-                event.setCancelled(true);
-            }
-        });
+        manager.addPacketListener(new RECIPES_SPacketRecipeBook(this));
 
-        // Fixes too many channels being sent to the server
-        manager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Login.Client.CUSTOM_PAYLOAD) {
-            @Override
-            public void onPacketReceiving(PacketEvent event) {
-                Player player = event.getPlayer();
-                PacketContainer packet = event.getPacket();
-                System.out.println(packet.getStructures());
-//                useLogger("Skipping Custom Payload packet [CPacketCustomPayload] being received from " + player.getName() + " with channels " + packet.getOptionalStructures().getValues().size());
-//                event.setCancelled(true);
-            }
-        });
+        // Test packet listener
+//        manager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.AUTO_RECIPE) {
+//            @Override
+//            public void onPacketSending(PacketEvent event) {
+//                getLogger().info("Packet: Server" + event.getPacketType().name());
+//            }
+//
+//            @Override
+//            public void onPacketReceiving(PacketEvent event) {
+//                getLogger().info("Packet: Client" + event.getPacketType().name());
+//            }
+//        });
     }
 
     /**
@@ -65,6 +84,7 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        useLogger("ModPacketFix has been disabled!");
+        getLogger().info("Clearing forge users list");
+        forgeUsers.clear();
     }
 }

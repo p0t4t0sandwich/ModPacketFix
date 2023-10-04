@@ -13,6 +13,9 @@ dependencies {
 
     // ProtocolLib
     compileOnly("com.comphenix.protocol:ProtocolLib:${protocollib_version}")
+
+    // ViaVersion
+//    compileOnly("com.viaversion:viaversion-api:${viaversion_version}")
 }
 
 java.disableAutoTargetJvm()

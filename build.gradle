@@ -8,7 +8,7 @@ subprojects {
     apply(plugin: 'java')
 
     group = 'dev.neuralnexus'
-    version = '1.0.0'
+    version = '1.0.1-R0.1-SNAPSHOT'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -46,6 +46,12 @@ subprojects {
         maven {
             name = "comphenix-repo"
             url = "https://repo.dmulloy2.net/repository/public/"
+        }
+
+        // ViaVersion
+        maven {
+            name = "viaversion-repo"
+            url = "https://repo.viaversion.com"
         }
     }
 }

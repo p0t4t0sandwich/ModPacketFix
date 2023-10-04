@@ -8,9 +8,11 @@
 
 A plugin that fixes some of the too big/too small packet errors that occur when connecting to a Vanilla server with a Forge client.
 
+## Please Note: Some fixes require the Forge user to reconnect to the server
+
 [Link to my development Discord](https://discord.neuralnexus.dev)
 
-When reporting an issue, please include the following:
+When reporting an issue or requesting a packet fix, please include the following:
 
 - Client version and type (Forge, Vanilla, etc.)
 - Server version and type (Spigot, Paper, etc.)
@@ -41,3 +43,27 @@ When reporting an issue, please include the following:
 ## Fixes Implemented
 
 - Server sending a recipe book packet that is too big
+
+## Common Forge Client Errors
+
+### Too Many Channels
+**Client error:**
+
+```
+Invalid payload REGISTER!
+```
+
+**Server error:**
+
+```
+[00:00:00 ERROR]: Couldn't register custom payload
+java.lang.IllegalStateException: Cannot register channel 'modid:channel'. Too many channels registered!
+```
+
+**Fix:**
+
+Add `-Dpaper.disableChannelLimit=true` to the server's startup arguments
+
+**Note:**
+
+Due to the amount of channels and mods at play, textures/items may be mismatched on the client
