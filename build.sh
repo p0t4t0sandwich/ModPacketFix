@@ -9,10 +9,10 @@ GROUP_ID=dev/neuralnexus
 
 function prepareFiles() {
   # Prepare PLATFORM files
-  cp ../$PROJ_NAME-$VERSION-$1.jar ./
-  mv ./$PROJ_NAME-$VERSION-$1.jar ./$PROJ_NAME-$VERSION-$1.zip
-  unzip ./$PROJ_NAME-$VERSION-$1.zip -d ./$1
-  rm -rf ./$PROJ_NAME-$VERSION-$1.zip
+  cp ../$PROJ_NAME-$1-$VERSION.jar ./
+  mv ./$PROJ_NAME-$1-$VERSION.jar ./$PROJ_NAME-$1-$VERSION.zip
+  unzip ./$PROJ_NAME-$1-$VERSION.zip -d ./$1
+  rm -rf ./$PROJ_NAME-$1-$VERSION.zip
 }
 
 function build() {
@@ -78,7 +78,7 @@ rm -rf ./common
 
 # --------------------------- Build 1.20 --------------------------------
 MC_VERSION=1.20
-OUT_FILE=$PROJ_NAME-$VERSION-$MC_VERSION
+OUT_FILE=$PROJ_NAME-$VERSION
 
 build $OUT_FILE
 

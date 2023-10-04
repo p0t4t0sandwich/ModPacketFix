@@ -36,20 +36,26 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
         // Client.RECIPE_SETTINGS
         // Client.RECIPE_DISPLAYED
         // PacketType.Login.Client.START -> onPacketReceiving -> packet.getStrings().read(0) -> username
-//        manager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Login.Server.CUSTOM_PAYLOAD) {
-//            @Override
-//            public void onPacketSending(PacketEvent event) {
-//                Player player = event.getPlayer();
-//                PacketContainer packet = event.getPacket();
-//                useLogger(packet.getStrings().toString());
-//            }
-//        });
+
+        // Fixes the recipe book packet being too large for the client to handle.
         manager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.RECIPES) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 Player player = event.getPlayer();
                 useLogger("Skipping Recipe Book packet [SPacketRecipeBook] being sent to " + player.getName());
                 event.setCancelled(true);
+            }
+        });
+
+        // Fixes too many channels being sent to the server
+        manager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Login.Client.CUSTOM_PAYLOAD) {
+            @Override
+            public void onPacketReceiving(PacketEvent event) {
+                Player player = event.getPlayer();
+                PacketContainer packet = event.getPacket();
+                System.out.println(packet.getStructures());
+//                useLogger("Skipping Custom Payload packet [CPacketCustomPayload] being received from " + player.getName() + " with channels " + packet.getOptionalStructures().getValues().size());
+//                event.setCancelled(true);
             }
         });
     }
