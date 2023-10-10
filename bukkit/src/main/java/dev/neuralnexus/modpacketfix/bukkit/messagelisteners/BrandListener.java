@@ -22,8 +22,8 @@ public class BrandListener implements PluginMessageListener {
                 plugin.addForgeUser(player);
                 plugin.getLogger().info("Registered " + player.getName() + " as a forge user");
             } else {
-                plugin.removeForgeUser(player);
                 if (plugin.isForgeUser(player)) {
+                    plugin.removeForgeUser(player);
                     plugin.getLogger().info("Unregistered " + player.getName() + " as a forge user");
                 }
             }

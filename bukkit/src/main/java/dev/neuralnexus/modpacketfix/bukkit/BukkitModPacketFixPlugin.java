@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolManager;
 import dev.neuralnexus.modpacketfix.bukkit.eventlisteners.PlayerEventListener;
 import dev.neuralnexus.modpacketfix.bukkit.messagelisteners.BrandListener;
 import dev.neuralnexus.modpacketfix.bukkit.packetlisteners.server.RECIPES_SPacketRecipeBook;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -59,24 +60,21 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
 //        messenger.registerIncomingPluginChannel(this, "MC|Brand", new BrandListener(this));
         messenger.registerIncomingPluginChannel(this, "minecraft:brand", new BrandListener(this));
 
-                // Register player event listener
+        // Register player event listener
         pluginManager.registerEvents(new PlayerEventListener(this), this);
 
         // Fixes the recipe book packet being too large for the client to handle.
         manager.addPacketListener(new RECIPES_SPacketRecipeBook(this));
 
         // Test packet listener
-//        manager.addPacketListener(new PacketAdapter(this, ListenerPriority.NORMAL, PacketType.Play.Server.AUTO_RECIPE) {
-//            @Override
-//            public void onPacketSending(PacketEvent event) {
-//                getLogger().info("Packet: Server" + event.getPacketType().name());
-//            }
-//
-//            @Override
-//            public void onPacketReceiving(PacketEvent event) {
-//                getLogger().info("Packet: Client" + event.getPacketType().name());
-//            }
-//        });
+//        manager.addPacketListener(new TestPacketListener(this, PacketType.Play.Server.RECIPES, true));
+
+
+//        {
+//            "exhaustion": 0.1,
+//            "message_id": "{damage_type_name}",
+//            "scaling": "never"
+//        }
     }
 
     /**
