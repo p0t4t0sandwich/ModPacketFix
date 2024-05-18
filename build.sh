@@ -2,7 +2,7 @@
 
 PROJ_ID=modpacketfix
 PROJ_NAME=ModPacketFix
-VERSION=1.0.1-R0.1-SNAPSHOT
+VERSION=1.0.2
 GROUP_ID=dev/neuralnexus
 
 # --------------------------- Functions --------------------------------

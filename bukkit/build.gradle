@@ -14,8 +14,8 @@ dependencies {
     // ProtocolLib
     compileOnly("com.comphenix.protocol:ProtocolLib:${protocollib_version}")
 
-    // ViaVersion
-//    compileOnly("com.viaversion:viaversion-api:${viaversion_version}")
+    // Guava
+    compileOnly("com.google.guava:guava:32.1.3-jre")
 }
 
 java.disableAutoTargetJvm()

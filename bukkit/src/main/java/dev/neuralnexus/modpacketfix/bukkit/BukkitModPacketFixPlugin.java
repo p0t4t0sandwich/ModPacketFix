@@ -2,10 +2,10 @@ package dev.neuralnexus.modpacketfix.bukkit;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import dev.neuralnexus.modpacketfix.bukkit.config.ConfigLoader;
 import dev.neuralnexus.modpacketfix.bukkit.eventlisteners.PlayerEventListener;
 import dev.neuralnexus.modpacketfix.bukkit.messagelisteners.BrandListener;
 import dev.neuralnexus.modpacketfix.bukkit.packetlisteners.server.RECIPES_SPacketRecipeBook;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,6 +49,8 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        ConfigLoader.loadConfig();
+
         Messenger messenger = getServer().getMessenger();
         PluginManager pluginManager = getServer().getPluginManager();
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
@@ -67,14 +69,7 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
         manager.addPacketListener(new RECIPES_SPacketRecipeBook(this));
 
         // Test packet listener
-//        manager.addPacketListener(new TestPacketListener(this, PacketType.Play.Server.RECIPES, true));
-
-
-//        {
-//            "exhaustion": 0.1,
-//            "message_id": "{damage_type_name}",
-//            "scaling": "never"
-//        }
+//        manager.addPacketListener(new TestPacketListener(this, PacketType.Login.Client.CUSTOM_PAYLOAD, false));
     }
 
     /**

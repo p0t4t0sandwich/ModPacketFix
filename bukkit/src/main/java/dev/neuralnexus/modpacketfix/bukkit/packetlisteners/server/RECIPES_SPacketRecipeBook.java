@@ -5,13 +5,8 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import dev.neuralnexus.modpacketfix.bukkit.BukkitModPacketFixPlugin;
+import dev.neuralnexus.modpacketfix.bukkit.config.ConfigLoader;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * Fixes the recipe book packet being too large for the client to handle.
@@ -26,7 +21,7 @@ public class RECIPES_SPacketRecipeBook extends PacketAdapter {
     @Override
     public void onPacketSending(PacketEvent event) {
         Player player = event.getPlayer();
-        if (plugin.isForgeUser(player)) {
+        if (plugin.isForgeUser(player) || ConfigLoader.getConfig().alwaysCancelRecipeBook) {
             event.setCancelled(true);
             plugin.getLogger().info("Skipping Recipe Book packet [SPacketRecipeBook] being sent to " + player.getName());
         }

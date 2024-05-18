@@ -15,7 +15,7 @@ public class BrandListener implements PluginMessageListener {
     }
 
     @Override
-    public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] message) {
+    public void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, byte @NotNull [] message) {
         if (channel.equals("MC|Brand") || channel.equals("minecraft:brand")) {
             String clientName = new String(message).trim().toLowerCase();
             if (clientName.contains("forge")) {
