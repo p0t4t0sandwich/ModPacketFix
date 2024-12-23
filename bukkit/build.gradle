@@ -3,7 +3,7 @@ plugins {
 }
 
 base {
-    archivesName = "${project_id}"
+    archivesName = "${project_id}-bukkit"
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_21
@@ -20,8 +20,6 @@ dependencies {
 
     paperweight.paperDevBundle("1.21.1-R0.1-SNAPSHOT")
 }
-
-java.disableAutoTargetJvm()
 
 processResources {
     def props = [version: version]
