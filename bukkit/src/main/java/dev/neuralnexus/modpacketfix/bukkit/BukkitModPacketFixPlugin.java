@@ -5,6 +5,8 @@ import com.comphenix.protocol.ProtocolManager;
 import dev.neuralnexus.modpacketfix.bukkit.config.ConfigLoader;
 import dev.neuralnexus.modpacketfix.bukkit.eventlisteners.PlayerEventListener;
 import dev.neuralnexus.modpacketfix.bukkit.messagelisteners.BrandListener;
+import dev.neuralnexus.modpacketfix.bukkit.messagelisteners.NeoForgeListener;
+import dev.neuralnexus.modpacketfix.bukkit.packetlisteners.server.SPacketLoginSuccess;
 import dev.neuralnexus.modpacketfix.bukkit.packetlisteners.server.RECIPES_SPacketRecipeBook;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -44,19 +46,16 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
         forgeUsers.remove(player.getName());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public void onEnable() {
         ConfigLoader.loadConfig();
 
-        Messenger messenger = getServer().getMessenger();
-        PluginManager pluginManager = getServer().getPluginManager();
+        Messenger messenger = this.getServer().getMessenger();
+        PluginManager pluginManager = this.getServer().getPluginManager();
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 
         // Clear the forge users list every 5 minutes
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, forgeUsers::clear, 0L, 6000L);
+        this.getServer().getScheduler().scheduleSyncRepeatingTask(this, forgeUsers::clear, 0L, 6000L);
 
         // Register the plugin message listener
 //        messenger.registerIncomingPluginChannel(this, "MC|Brand", new BrandListener(this));
@@ -68,16 +67,20 @@ public class BukkitModPacketFixPlugin extends JavaPlugin {
         // Fixes the recipe book packet being too large for the client to handle.
         manager.addPacketListener(new RECIPES_SPacketRecipeBook(this));
 
+        // Add support for NeoForge clients
+        messenger.registerIncomingPluginChannel(this, NeoForgeListener.REGISTER, new NeoForgeListener(this));
+        messenger.registerOutgoingPluginChannel(this, NeoForgeListener.REGISTER);
+        messenger.registerIncomingPluginChannel(this, NeoForgeListener.NETWORK, new NeoForgeListener(this));
+        messenger.registerOutgoingPluginChannel(this, NeoForgeListener.NETWORK);
+        manager.addPacketListener(new SPacketLoginSuccess(this));
+
         // Test packet listener
 //        manager.addPacketListener(new TestPacketListener(this, PacketType.Login.Client.CUSTOM_PAYLOAD, false));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public void onDisable() {
-        getLogger().info("Clearing forge users list");
+        this.getLogger().info("Clearing forge users list");
         forgeUsers.clear();
     }
 }
